@@ -1,6 +1,6 @@
 {
-  "short_name": "ToK",
-  "name": "Thrills of Kerala (Coming Soon)",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",
