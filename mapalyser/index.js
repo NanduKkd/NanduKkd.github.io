@@ -123,7 +123,7 @@ function search (text) {
 }
 document.addEventListener('DOMContentLoaded', () => {
     map = L.map('map').setView([22.5, 82.5], 5);
-    fetch('/geo.json').then(res => res.json()).then(geoJson => {
+    fetch('geo.json').then(res => res.json()).then(geoJson => {
         const tb = document.querySelector('tbody')
         const ftrs = geoJson.features.map(i => i.properties).sort((a,b) => a.pc_name>b.pc_name?1:a.pc_name<b.pc_name?-1:0)
         for(let i of ftrs) {
