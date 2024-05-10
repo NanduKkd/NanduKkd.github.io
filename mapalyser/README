@@ -1,0 +1,6 @@
+### Make Maps Easy!
+
+Open [https://nandukkd.github.io/mapalyser](Mapalyser), add your party/alliance name and color and then show your predictions!
+
+Constituency Map Data Credits: [https://github.com/datameet/maps/tree/master/parliamentary-constituencies](Datameet)
+Mapping: [https://leafletjs.com](Leaflet)
