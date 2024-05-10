@@ -1,0 +1,7 @@
+classes= 1
+train  = data/obj
+valid  = data/test
+#valid = data/coco_val_5k.list
+names = data/custom.names
+backup = /mydrive/YOLO/backup
+#eval=coco
