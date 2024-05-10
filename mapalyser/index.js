@@ -58,7 +58,7 @@ const addParty = (name, color) => {
     pname.classList.add('name')
     const pebut = p.appendChild(document.createElement('button'))
     pebut.classList.add('icon')
-    pebut.appendChild(document.createElement('img')).src = "/assets/edit.svg"
+    pebut.appendChild(document.createElement('img')).src = "assets/edit.svg"
     pebut.onclick = () => {
         const edter = document.getElementById('edit-party-modal')
         showModal('edit-party-modal')
@@ -69,7 +69,7 @@ const addParty = (name, color) => {
     };
     const pdbut = p.appendChild(document.createElement('button'))
     pdbut.classList.add('icon')
-    pdbut.appendChild(document.createElement('img')).src = "/assets/delete.svg"
+    pdbut.appendChild(document.createElement('img')).src = "assets/delete.svg"
     pdbut.onclick = () => {
         const dlter = document.getElementById('remove-party-modal')
         showModal('remove-party-modal')

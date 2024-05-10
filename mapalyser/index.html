@@ -2,13 +2,13 @@
     <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
          crossorigin=""/>-->
-        <link rel="stylesheet" href="/leaflet/index.css" />
-        <link rel="stylesheet" href="/index.css" />
+        <link rel="stylesheet" href="leaflet/index.css" />
+        <link rel="stylesheet" href="index.css" />
     <head>
          <!--<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
              integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
              crossorigin=""></script>-->
-        <script src="/leaflet/index.js"></script>
+        <script src="leaflet/index.js"></script>
         <script src="index.js">
         </script>
     </head>
@@ -19,7 +19,7 @@
                  <img src="assets/search.png">
                  <input id="search" placeholder="Type 'kerala' or 'Varanasi'" name="pc-search" oninput="search(event.target.value.toLowerCase())">
                  <button class="icon" onclick="showModal('parties-modal')">
-                     <img src="/assets/settings.svg">
+                     <img src="assets/settings.svg">
                  </button>
              </div>
              <table>
@@ -38,14 +38,14 @@
                  <div class="modal-header">
                      <div class="modal-title">Parties</div>
                      <button class="modal-close icon" onclick="closeModal('parties-modal')">
-                         <img src="/assets/close.svg" />
+                         <img src="assets/close.svg" />
                      </button>
                  </div>
                  <div class="modal-body">
                      <div id="parties-list">
                      </div>
                      <button class="icon" id="new-party" onclick="addPartyModal()">
-                         <img src="/assets/add.svg"> Add Party
+                         <img src="assets/add.svg"> Add Party
                      </button>
                  </div>
              </div>
@@ -56,7 +56,7 @@
                      <div class="modal-header">
                          <div class="modal-title">Edit Party</div>
                          <button class="modal-close icon" onclick="closeModal('edit-party-modal')">
-                             <img src="/assets/close.svg" />
+                             <img src="assets/close.svg" />
                          </button>
                      </div>
                      <div class="modal-body">
@@ -78,7 +78,7 @@
                      <div class="modal-header">
                          <div class="modal-title">New Party</div>
                          <button class="modal-close icon" onclick="closeModal('add-party-modal')">
-                             <img src="/assets/close.svg" />
+                             <img src="assets/close.svg" />
                          </button>
                      </div>
                      <div class="modal-body">
@@ -99,7 +99,7 @@
                  <div class="modal-header">
                      <div class="modal-title">Remove Party</div>
                      <button class="modal-close icon" onclick="closeModal('remove-party-modal')">
-                         <img src="/assets/close.svg" />
+                         <img src="assets/close.svg" />
                      </button>
                  </div>
                  <div class="modal-body">
