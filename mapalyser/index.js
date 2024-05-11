@@ -7,7 +7,7 @@ const randomCode = () => {
     return out;
 }
 
-const onSelectToggle = (tr, td) => {
+const onSelectToggle = (tr, td, rerender=true) => {
     if(tr.dataset.pcvalue === td.dataset.value) {
         tr.dataset.pcvalue = '';
         tr.dataset.pccolor = '#fff';
@@ -16,14 +16,17 @@ const onSelectToggle = (tr, td) => {
         tr.dataset.pccolor = td.dataset.color;
     }
     tr.style.backgroundColor = tr.dataset.pccolor;
-    render();
+    if(rerender) {
+        render();
+        edited();
+    }
 }
 
 const addPartyModal = () => {
     showModal('add-party-modal');
 }
 
-const editParty = (value, name, color) => {
+const editParty = (value, name, color, rerender=true) => {
     const p = document.querySelector('#parties-list > div[data-value="'+value+'"]');
     p.dataset.name = name;
     p.dataset.color = color;
@@ -41,10 +44,13 @@ const editParty = (value, name, color) => {
     htd.innerText = name;
     htd.dataset.color = color;
     htd.style.backgroundColor = color;
-    render();
+    if(rerender) {
+        render();
+        edited();
+    }
 }
 
-const addParty = (name, color) => {
+const addParty = (name, color, rerender=true) => {
     const value = randomCode();
     const pl = document.getElementById('parties-list')
     const p = pl.appendChild(document.createElement('div'))
@@ -89,9 +95,13 @@ const addParty = (name, color) => {
     htd.dataset.value = value;
     htd.dataset.color = color;
     htd.style.backgroundColor = color;
-    render();
+    if(rerender) {
+        render();
+        edited();
+    }
+    return value;
 }
-const removeParty = (value) => {
+const removeParty = (value, rerender = true) => {
     document.querySelector('#parties-list > div[data-value="'+value+'"]')?.remove();
     const htd = document.querySelector('thead tr td[data-value="'+value+'"]');
     const trs = document.querySelectorAll('tbody tr');
@@ -105,7 +115,10 @@ const removeParty = (value) => {
         td.remove();
     }
     htd.remove();
-    render();
+    if(rerender) {
+        render();
+        edited();
+    }
 }
 let map, geo;
 function render() {
@@ -142,8 +155,23 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         }})
         geo.addTo(map)
+        const dt = localStorage.data;
+        if(dt && confirm("Do you want to retrieve previous data? If you cancel, saved data will be lost.")) {
+            useCsv(dt, false);
+        }
+        localStorage.removeItem('data');
         render();
     }).catch(e => console.error(e))
+    window.addEventListener('beforeunload', (e) => {
+        if(!window.dataChanged)
+            return '';
+        // For IE and Firefox prior to version 4
+        if (e) {
+            e.returnValue = 'All your data will be lost. Continue?';
+        }
+        // For Safari
+        return e.returnValue;
+    })
 })
 
 function blink(elem) {
@@ -169,4 +197,92 @@ function showModal(modalId) {
     document.getElementById(modalId).classList.add('visible')
 }
 
+function toCsv() {
+    const hrow = document.querySelector('thead tr');
+    let arr = [];
+    let arc = [''];
+    let arn = ['PC']
+    for(let htd of hrow.querySelectorAll('td')) {
+        if(!htd.dataset.value) continue;
+        arc.push(htd.dataset.color);
+        arn.push(htd.innerText);
+    }
+    arr.push(arc, arn);
+    for(let tr of document.querySelectorAll('tbody tr')) {
+        const carr = [tr.dataset.pc];
+        for(let td of tr.querySelectorAll('td')) {
+            if(!td.dataset.value) continue
+            carr.push(tr.dataset.pcvalue===td.dataset.value ? 1 : 0);
+        }
+        arr.push(carr);
+    }
+    return arr.map(i => i.join(',')).join('\n')
+}
 
+function save() {
+    localStorage.data = toCsv();
+    window.dataChanged = false;
+    document.getElementById('save-icon').disabled = true;
+}
+
+function download() {
+    const filename = prompt("Enter a name for the file")
+    const link = document.createElement("a");
+    const file = new Blob([toCsv()], { type: 'text/csv' });
+    link.href = URL.createObjectURL(file);
+    link.download = filename+".csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
+function useCsv(csv, rerender=true) {
+    const hrow = document.querySelector('thead tr');
+    for(let htd of hrow.querySelectorAll('td')) {
+        if(!htd.dataset.value) continue;
+        removeParty(htd.dataset.value, false)
+    }
+    const arr = csv.split('\n').map(i => i.split(','));
+    const parties = [];
+    for(let i=1; i<arr[0].length; i++) {
+        parties.push(addParty(arr[1][i], arr[0][i], false));
+    }
+    for(let i=2; i<arr.length; i++) {
+        const pc = arr[i][0];
+        const winner = parties[arr[i].indexOf('1')-1];
+        if(!winner) continue
+        const tr = document.querySelector('tbody tr[data-pc="'+pc+'"]');
+        try {
+            onSelectToggle(tr, tr.querySelector('td[data-value="'+winner+'"]'), false);
+        } catch (error) {
+            console.error(error)
+            console.log(i, arr[i], tr)
+        }
+    }
+    if(rerender) {
+        render();
+        edited();
+    }
+}
+function upload () {
+    if(window.dataChanged && !confirm("Are you sure to continue? ALl your existing changes will be deleted."))
+        return;
+    let el = document.createElement("INPUT");
+    el.type = "file";
+    el.accept = "text/csv";
+    el.addEventListener('change', ev2 => {
+        if (el.files.length) {
+            el.files[0].arrayBuffer().then(r => {
+                useCsv(new TextDecoder().decode(r), true)
+            })
+        }
+    });
+    el.click();
+}
+
+function edited() {
+    if(!window.dataChanged) {
+        document.getElementById('save-icon').disabled = false;
+        document.getElementById('save-icon').disabled = false;
+        window.dataChanged = true;
+    }
+}

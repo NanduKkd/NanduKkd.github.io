@@ -88,6 +88,7 @@ tfoot button {
 button.icon img {
     height: 1em;
     width: 1em;
+    cursor: pointer;
 }
 button.icon {
     padding: 0.2em;
@@ -95,10 +96,10 @@ button.icon {
     border: none;
     font-size: 1em;
 }
-button.icon:hover {
+button.icon:hover img {
     opacity: 0.6;
 }
-button.icon:active {
+button.icon:active img {
     opacity: 0.3;
 }
 .modal-body {
@@ -187,4 +188,23 @@ input[type="color"]:hover {
 }
 .color-picker input {
     flex: 1;
+}
+.main-header {
+    z-index: 9999;
+    position: fixed;
+    top: 10px;
+    left: 60px;
+    display: flex;
+    padding: 0.3em;
+    gap: 0.7em;
+    background-color: white;
+    font-size: 1.2em;
+    border-radius: 4px;
+    box-shadow: #0004 0 0 5px;
+}
+button.icon[disabled] {
+    pointer-events: none;
+}
+button.icon[disabled] img {
+    opacity: 0.4;
 }
