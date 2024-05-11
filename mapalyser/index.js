@@ -135,7 +135,7 @@ function search (text) {
     })
 }
 document.addEventListener('DOMContentLoaded', () => {
-    map = L.map('map').setView([22.5, 82.5], 5);
+    map = L.map('map', {attributionControl: false, zoomSnap: 0.3}).setView([22.5, 82.5], 5);
     fetch('geo.json').then(res => res.json()).then(geoJson => {
         const tb = document.querySelector('tbody')
         const ftrs = geoJson.features.map(i => i.properties).sort((a,b) => a.pc_name>b.pc_name?1:a.pc_name<b.pc_name?-1:0)
@@ -227,12 +227,16 @@ function save() {
 
 function download() {
     const filename = prompt("Enter a name for the file")
+    const url = URL.createObjectURL(new Blob([toCsv()], { type: 'text/csv' }));
+    downloadURL(url, filename+".csv")
+    URL.revokeObjectURL(url);
+}
+
+const downloadURL = (url, filename) => {
     const link = document.createElement("a");
-    const file = new Blob([toCsv()], { type: 'text/csv' });
-    link.href = URL.createObjectURL(file);
-    link.download = filename+".csv";
+    link.href = url;
+    link.download = filename;
     link.click();
-    URL.revokeObjectURL(link.href);
 }
 
 function useCsv(csv, rerender=true) {
@@ -285,4 +289,26 @@ function edited() {
         document.getElementById('save-icon').disabled = false;
         window.dataChanged = true;
     }
+}
+
+async function saveImage (width = 2160) {
+    const m = document.getElementById('map');
+    const svg = document.querySelector('#map .leaflet-overlay-pane > svg');
+    const sc =  svg.querySelector('g');
+    const w = svg.getAttribute('width'), h = svg.getAttribute('height');
+    const newSvg = `<?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'><svg xmlns="http://www.w3.org/2000/svg" viewBox="${svg.getAttribute('viewBox')}" style="background-color: #ddd" width="${width}" height="${h/w*width}">${sc.innerHTML}</svg>`
+    const c = document.createElement('canvas');
+    c.width = width;
+    c.height = h/w*width;
+    c.style.width = width+'px';
+    const ct = c.getContext('2d');
+    const i = new Image();
+    i.onload = e => {
+        ct.drawImage(i, 0, 0);
+        downloadURL(c.toDataURL(), 'loksabhaAnalysis.png');
+    }
+    i.onerror = (e,er) => {
+        console.error(e)
+    }
+    i.src = 'data:image/svg+xml;base64,'+btoa(newSvg)
 }
