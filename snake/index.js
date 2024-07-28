@@ -140,6 +140,6 @@ class Game {
 		this.ctx.fill();
 		this.ctx.fillStyle = this.failed?'#f00':'#000';
 		this.ctx.font = 'bold 24px monospace'
-		this.ctx.fillText('Score: '+this.snake.length+(this.failed?'   GAME OVER':''), start[0], start[1]-10);
+		this.ctx.fillText('Score: '+(this.snake.length-3)+(this.failed?'   GAME OVER':''), start[0], start[1]-10);
 	}
 }
