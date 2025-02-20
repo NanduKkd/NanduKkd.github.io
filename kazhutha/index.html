@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kazhutha!</title>
+		<script src="index.js"></script>
+		<style>
+		#peoples {
+			background-color: #fcc;
+		}
+		#peoples > div {
+			padding: 10px 0;
+		}
+		#newRoundDiv {
+			padding: 10px 0;
+		}
+		#newRound {
+			background-color: #cfc;
+			padding: 10px 0;
+		}
+		#otherItems {
+			background-color: #ccf;
+			padding: 10px 0;
+		}
+		div[data-card] {
+			border: solid 1px black;
+			display: inline-block;
+			padding: 5px;
+			margin: 5px;
+		}
+		div[data-card][data-marked='yes'] {
+			background-color: #0002;
+			color: #0007;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="peoples"></div>
+		<div id="newRound">
+			<button onclick="askRoundExit();">Round Exit</button>
+			<div id="newRoundDiv"></div>
+		</div>
+		<div id="otherItems"></div>
+		<div id="spentItems"></div>
+	</body>
+</html>
