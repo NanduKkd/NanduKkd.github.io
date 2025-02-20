@@ -15,7 +15,7 @@ let newRound = [];
 
 
 
-const makeUniqueCardsContainer = (itemsContainer, items, marked = {}) => {
+const makeUniqueCardsContainer = (itemsContainer, items, marked = {}, onClick) => {
 	const markedCards = {};
 	const children = [...itemsContainer.children]
 	for(let j of children) {
@@ -31,7 +31,8 @@ const makeUniqueCardsContainer = (itemsContainer, items, marked = {}) => {
 			const newDiv = itemsContainer.appendChild(document.createElement('div'));
 			newDiv.dataset.card = j;
 			newDiv.innerText = j;
-			newDiv.onclick = () => putDown(j);
+			if(onClick)
+				newDiv.onclick = () => onClick(j);
 			marked[j] = true
 		}
 	}
@@ -42,12 +43,12 @@ const makeUniqueCardsContainer = (itemsContainer, items, marked = {}) => {
 function render() {
 	const usedCards = {};
 	for(let i of peopleData) {
-		makeUniqueCardsContainer(peoples[i.id], i.cards, usedCards);
+		makeUniqueCardsContainer(peoples[i.id], i.cards, usedCards, putDown);
 	}
 
 	makeUniqueCardsContainer(spentContainer, spentCards, usedCards);
 
-	makeUniqueCardsContainer(newRoundDiv, newRound, usedCards);
+	makeUniqueCardsContainer(newRoundDiv, newRound, usedCards, cancelPutDown);
 
 	for(let i of otherItems) {
 		i.dataset.marked = usedCards[i.dataset.card] ? 'yes' : 'no';
@@ -55,7 +56,8 @@ function render() {
 }
 
 function putDown(item) {
-	newRound.push(item);
+	if(newRound.indexOf(item)===-1)
+		newRound.push(item);
 	peopleData = peopleData.map(i => ({...i, cards: i.cards.filter(j => j!==item)}));
 	render();
 }
@@ -90,23 +92,34 @@ function askRoundExit() {
 			askRoundExit();
 		}
 	}
-	roundExit(val || null);
+	roundExit(val===' ' ? null : val);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-	let count;
+	let count, you;
 	while (!count || isNaN(count)) {
 		count = Number(prompt('How many people?'));
+	}
+	while (!you || isNaN(you) || you>count || you < 1) {
+		you = Number(prompt('Which one is you?'));
 	}
 
 	const pe = document.getElementById('peoples');
 	for(let i=0; i<count; i++) {
 		peopleData.push({id: i+1, cards: []});
 		const personContainer = pe.appendChild(document.createElement('div'));
+		if(i+1 === you)
+			personContainer.dataset.you = 'yes';
 		peoples[i+1] = personContainer.appendChild(document.createElement('div'));
 		peopleDivs[i+1] = [];
 		const personName = personContainer.appendChild(document.createElement('span'));
 		personName.innerText = 'Person '+(i+1);
+		for(const type of types) {
+			const label = personName.appendChild(document.createElement('label'));
+			label.innerText = type
+			const value = label.appendChild(document.createElement('input'));
+			value.type = 'checkbox';
+		}
 	}
 	const otherItemsDiv = document.getElementById('otherItems');
 	for(let i of cards) {
